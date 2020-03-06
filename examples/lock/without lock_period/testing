@@ -1,0 +1,5 @@
+        case button_event_double_press:
+            printf("locking\n");
+            lock_timeout();
+            homekit_characteristic_notify(&lock_target_state, lock_target_state.value);
+            break;
