@@ -28,7 +28,7 @@ const int relay_gpio = 12;
 const int led_gpio = 2;
 // The GPIO pin that is connected to a button
 // const int button_gpio = 0;
-const int button_gpio = 4;
+#define BUTTON_PIN 0
 
 // Timeout in seconds to open lock for
 const int unlock_period = 5;  // 5 seconds
@@ -87,7 +87,7 @@ void gpio_init() {
     relay_write(!relay_open_signal);
 }
 
-void button_callback(uint8_t gpio, button_event_t event) {
+void button_callback(button_event_t event, void* context) {
     switch (event) {
         case button_event_single_press:
             printf("Toggling relay\n");
@@ -264,7 +264,14 @@ void user_init(void) {
     gpio_init();
     lock_init();
 
-    if (button_create(button_gpio, 0, 4000, button_callback)) {
+    button_config_t config = BUTTON_CONFIG(
+        button_active_high,
+        .long_press_time = 1000,
+        .max_repeat_presses = 3,
+    );
+
+    int r = button_create(BUTTON_PIN, config, button_callback, NULL);
+    if (r) {
         printf("Failed to initialize button\n");
     }
 }
