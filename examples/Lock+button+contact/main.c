@@ -1,9 +1,3 @@
-/*
- * Implemenetation of lock mechanism accessory for a magnet lock.
- * When unlocked, it changes relay state (unlocks) for configured period and then
- * changes it back.
- */
-
 #include <stdio.h>
 #include <espressif/esp_wifi.h>
 #include <espressif/esp_sta.h>
