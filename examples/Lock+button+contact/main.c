@@ -105,27 +105,6 @@ void gpio_init() {
     relay_write(!relay_open_signal);
 }
 
-homekit_value_t door_state_getter() {
-    printf("Door state was requested (%s).\n", contact_sensor_state_get(REED_PIN) == CONTACT_OPEN ? "open" : "closed");
-    return HOMEKIT_UINT8(contact_sensor_state_get(REED_PIN) == CONTACT_OPEN ? 1 : 0);
-}
-homekit_characteristic_t door_open_characteristic = HOMEKIT_CHARACTERISTIC_(CONTACT_SENSOR_STATE, 0,
-    .getter=door_state_getter,
-    .setter=NULL,
-    NULL
-);
-
-void contact_sensor_callback(uint8_t gpio, contact_sensor_state_t state) {
-    switch (state) {
-        case CONTACT_OPEN:
-        case CONTACT_CLOSED:
-            printf("Pushing contact sensor state '%s'.\n", state == CONTACT_OPEN ? "open" : "closed");
-            homekit_characteristic_notify(&door_open_characteristic, door_state_getter());
-            break;
-        default:
-            printf("Unknown contact sensor event: %d\n", state);
-    }
-}
 
 homekit_characteristic_t button_event = HOMEKIT_CHARACTERISTIC_(PROGRAMMABLE_SWITCH_EVENT, 0);
 
@@ -251,6 +230,37 @@ void lock_unlock() {
 
 }
 
+
+homekit_value_t door_state_getter() {
+    printf("Door state was requested (%s).\n", contact_sensor_state_get(REED_PIN) == CONTACT_OPEN ? "open" : "closed");
+    return HOMEKIT_UINT8(contact_sensor_state_get(REED_PIN) == CONTACT_OPEN ? 1 : 0);
+}
+
+/**
+ * The sensor characteristic as global variable.
+ **/
+homekit_characteristic_t door_open_characteristic = HOMEKIT_CHARACTERISTIC_(CONTACT_SENSOR_STATE, 0,
+    .getter=door_state_getter,
+    .setter=NULL,
+    NULL
+);
+
+/**
+ * Called (indirectly) from the interrupt handler to notify the client of a state change.
+ **/
+void contact_sensor_callback(uint8_t gpio, contact_sensor_state_t state) {
+    switch (state) {
+        case CONTACT_OPEN:
+        case CONTACT_CLOSED:
+            printf("Pushing contact sensor state '%s'.\n", state == CONTACT_OPEN ? "open" : "closed");
+            homekit_characteristic_notify(&door_open_characteristic, door_state_getter());
+            break;
+        default:
+            printf("Unknown contact sensor event: %d\n", state);
+    }
+}
+
+
 homekit_accessory_t *accessories[] = {
     HOMEKIT_ACCESSORY(.id=1, .category=homekit_accessory_category_door_lock, .services=(homekit_service_t*[]){
         HOMEKIT_SERVICE(ACCESSORY_INFORMATION, .characteristics=(homekit_characteristic_t*[]){
@@ -343,7 +353,7 @@ homekit_server_config_t config = {
 
 void on_wifi_ready() {
     homekit_server_init(&config);
-    homekit_characteristic_notify(&door_open_characteristic, door_state_getter());
+
 }
 
 void create_accessory_name() {
@@ -365,6 +375,12 @@ void user_init(void) {
     create_accessory_name();
 
     wifi_config_init("lockbuttoncontact", NULL, on_wifi_ready);
+
+    printf("Using Sensor at GPIO%d.\n", REED_PIN);
+        if (contact_sensor_create(REED_PIN, contact_sensor_callback)) {
+            printf("Failed to initialize door\n");
+        }
+
     gpio_init();
     lock_init();
 
@@ -378,4 +394,5 @@ void user_init(void) {
     if (r) {
         printf("Failed to initialize button\n");
     }
+    homekit_characteristic_notify(&door_open_characteristic, door_state_getter());
 }
