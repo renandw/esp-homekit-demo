@@ -356,7 +356,7 @@ void user_init(void) {
     sensor_init();
     gpio_init();
     temperature_sensor_init();
-    wifi_config_init("HomeKid", "12345678", on_wifi_ready);
+    wifi_config_init("LuxMotionTH", "12345678", on_wifi_ready);
 
 
 
