@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <espressif/esp_wifi.h>
 #include <espressif/esp_sta.h>
 #include <espressif/esp_common.h>
@@ -6,6 +7,8 @@
 #include <esp8266.h>
 #include <FreeRTOS.h>
 #include <task.h>
+#include <queue.h>
+#include <string.h>
 
 #include <homekit/homekit.h>
 #include <homekit/characteristics.h>
@@ -14,14 +17,14 @@
 #include <button.h>
 #include <toggle.h>
 
-// The GPIO pin that is connected to TRIAC#1 on the board.
-const int triac_gpio_1 = 1;
-// The GPIO pin that is connected to TRIAC#2 on the board.
-const int triac_gpio_2 = 3;
-// The GPIO pin that is connected to TRIAC#1 on the board.
-const int triac_gpio_3 = 13;
-// The GPIO pin that is connected to TRIAC#2 on the board.
-const int triac_gpio_4 = 16;
+// The GPIO pin that is connected to RELAY#1 on the board.
+const int relay_gpio_1 = 1;
+// The GPIO pin that is connected to RELAY#2 on the board.
+const int relay_gpio_2 = 3;
+// The GPIO pin that is connected to RELAY#1 on the board.
+const int relay_gpio_3 = 13;
+// The GPIO pin that is connected to RELAY#2 on the board.
+const int relay_gpio_4 = 16;
 
 // The GPIO pin that is connected to the LED on the ESP12F.
 const int led_gpio = 2;
@@ -61,20 +64,20 @@ void lightbulb_on_3_callback(homekit_characteristic_t *_ch, homekit_value_t on, 
 void lightbulb_on_4_callback(homekit_characteristic_t *_ch, homekit_value_t on, void *context);
 
 
-void triac_write_1(bool on) {
-    gpio_write(triac_gpio_1, on ? 0 : 1);
+void relay_write_1(bool on) {
+    gpio_write(relay_gpio_1, on ? 0 : 1);
 }
 
-void triac_write_2(bool on) {
-    gpio_write(triac_gpio_2, on ? 0 : 1);
+void relay_write_2(bool on) {
+    gpio_write(relay_gpio_2, on ? 0 : 1);
 }
 
-void triac_write_3(bool on) {
-    gpio_write(triac_gpio_3, on ? 0 : 1);
+void relay_write_3(bool on) {
+    gpio_write(relay_gpio_3, on ? 0 : 1);
 }
 
-void triac_write_4(bool on) {
-    gpio_write(triac_gpio_4, on ? 0 : 1);
+void relay_write_4(bool on) {
+    gpio_write(relay_gpio_4, on ? 0 : 1);
 }
 
 void led_write(bool on) {
@@ -127,17 +130,17 @@ void gpio_init() {
     gpio_enable(led_gpio, GPIO_OUTPUT);
     led_write(false);
 
-    gpio_enable(triac_gpio_1, GPIO_OUTPUT);
-    triac_write_1(lightbulb_on_1.value.bool_value);
+    gpio_enable(relay_gpio_1, GPIO_OUTPUT);
+    relay_write_1(lightbulb_on_1.value.bool_value);
 
-    gpio_enable(triac_gpio_2, GPIO_OUTPUT);
-    triac_write_2(lightbulb_on_2.value.bool_value);
+    gpio_enable(relay_gpio_2, GPIO_OUTPUT);
+    relay_write_2(lightbulb_on_2.value.bool_value);
 
-    gpio_enable(triac_gpio_3, GPIO_OUTPUT);
-    triac_write_3(lightbulb_on_3.value.bool_value);
+    gpio_enable(relay_gpio_3, GPIO_OUTPUT);
+    relay_write_3(lightbulb_on_3.value.bool_value);
 
-    gpio_enable(triac_gpio_4, GPIO_OUTPUT);
-    triac_write_4(lightbulb_on_4.value.bool_value);
+    gpio_enable(relay_gpio_4, GPIO_OUTPUT);
+    relay_write_4(lightbulb_on_4.value.bool_value);
 
     gpio_enable(BUTTON_PIN,  GPIO_INPUT);
     gpio_enable(TOGGLE_PIN_1, GPIO_INPUT);
@@ -147,19 +150,19 @@ void gpio_init() {
 }
 
 void lightbulb_on_1_callback(homekit_characteristic_t *_ch, homekit_value_t on, void *context) {
-    triac_write_1(lightbulb_on_1.value.bool_value);
+    relay_write_1(lightbulb_on_1.value.bool_value);
 }
 
 void lightbulb_on_2_callback(homekit_characteristic_t *_ch, homekit_value_t on, void *context) {
-    triac_write_2(lightbulb_on_2.value.bool_value);
+    relay_write_2(lightbulb_on_2.value.bool_value);
 }
 
 void lightbulb_on_3_callback(homekit_characteristic_t *_ch, homekit_value_t on, void *context) {
-    triac_write_3(lightbulb_on_3.value.bool_value);
+    relay_write_3(lightbulb_on_3.value.bool_value);
 }
 
 void lightbulb_on_4_callback(homekit_characteristic_t *_ch, homekit_value_t on, void *context) {
-    triac_write_4(lightbulb_on_4.value.bool_value);
+    relay_write_4(lightbulb_on_4.value.bool_value);
 }
 
 
@@ -174,30 +177,30 @@ void button_callback(button_event_t event, void* context) {
 }
 
 void toggle_callback_1(bool high, void *context) {
-    printf("Toggling TRIAC 1 due to switch at GPIO 3");
+    printf("toggle is %s\n", high ? "high" : "low");
     lightbulb_on_1.value.bool_value = !lightbulb_on_1.value.bool_value;
-    triac_write_1(lightbulb_on_1.value.bool_value);
+    relay_write_1(lightbulb_on_1.value.bool_value);
     homekit_characteristic_notify(&lightbulb_on_1, lightbulb_on_1.value);
 }
 
 void toggle_callback_2(bool high, void *context) {
-    printf("Toggling TRIAC 2 due to switch at GPIO 13");
+    printf("toggle is %s\n", high ? "high" : "low");
     lightbulb_on_2.value.bool_value = !lightbulb_on_2.value.bool_value;
-    triac_write_2(lightbulb_on_2.value.bool_value);
+    relay_write_2(lightbulb_on_2.value.bool_value);
     homekit_characteristic_notify(&lightbulb_on_2, lightbulb_on_2.value);
 }
 
 void toggle_callback_3(bool high, void *context) {
-    printf("Toggling TRIAC 3 due to switch at GPIO 2");
+    printf("toggle is %s\n", high ? "high" : "low");
     lightbulb_on_3.value.bool_value = !lightbulb_on_3.value.bool_value;
-    triac_write_3(lightbulb_on_3.value.bool_value);
+    relay_write_3(lightbulb_on_3.value.bool_value);
     homekit_characteristic_notify(&lightbulb_on_3, lightbulb_on_3.value);
 }
 
 void toggle_callback_4(bool high, void *context) {
-    printf("Toggling TRIAC 4 due to switch at GPIO 16");
+    printf("toggle is %s\n", high ? "high" : "low");
     lightbulb_on_4.value.bool_value = !lightbulb_on_4.value.bool_value;
-    triac_write_4(lightbulb_on_4.value.bool_value);
+    relay_write_4(lightbulb_on_4.value.bool_value);
     homekit_characteristic_notify(&lightbulb_on_4, lightbulb_on_4.value);
 }
 
@@ -221,45 +224,47 @@ void light_identify(homekit_value_t _value) {
     xTaskCreate(light_identify_task, "Light identify", 128, NULL, 2, NULL);
 }
 
-homekit_characteristic_t name = HOMEKIT_CHARACTERISTIC_(NAME, "ESP12F 4CH");
+homekit_characteristic_t name = HOMEKIT_CHARACTERISTIC_(NAME, "4 Lâmpadas");
+homekit_characteristic_t serial = HOMEKIT_CHARACTERISTIC_(SERIAL_NUMBER, NULL);
+
 
 homekit_accessory_t *accessories[] = {
     HOMEKIT_ACCESSORY(
-          .id=1, 
-          .category=homekit_accessory_category_switch, 
+          .id=1,
+          .category=homekit_accessory_category_switch,
           .services=(homekit_service_t*[]){
-        HOMEKIT_SERVICE(ACCESSORY_INFORMATION, .characteristics=(homekit_characteristic_t*[]){
+            HOMEKIT_SERVICE(ACCESSORY_INFORMATION, .characteristics=(homekit_characteristic_t*[]){
             HOMEKIT_CHARACTERISTIC(IDENTIFY, light_identify),
-            HOMEKIT_CHARACTERISTIC(MANUFACTURER, "LKAI"),
-            HOMEKIT_CHARACTERISTIC(MODEL, "ESP 4CH"),
+            HOMEKIT_CHARACTERISTIC(MANUFACTURER, "renandw"),
+            HOMEKIT_CHARACTERISTIC(MODEL, "4chrelay"),
             &name,
-            HOMEKIT_CHARACTERISTIC(SERIAL_NUMBER, "mps"),
-            HOMEKIT_CHARACTERISTIC(FIRMWARE_REVISION, "1"),
-            HOMEKIT_CHARACTERISTIC(HARDWARE_REVISION, "V2"),
+            &serial,
+            HOMEKIT_CHARACTERISTIC(FIRMWARE_REVISION, "3.0"),
+            HOMEKIT_CHARACTERISTIC(HARDWARE_REVISION, "2.0"),
             NULL
         },
         ),
 
         HOMEKIT_SERVICE(LIGHTBULB, .primary=true, .characteristics=(homekit_characteristic_t*[]){
-	    HOMEKIT_CHARACTERISTIC(NAME, "Light 1"),
+	    HOMEKIT_CHARACTERISTIC(NAME, "Lâmpada 1"),
 	    &lightbulb_on_1,
             NULL
         }),
-        
+
         HOMEKIT_SERVICE(LIGHTBULB, .characteristics=(homekit_characteristic_t*[]){
-            HOMEKIT_CHARACTERISTIC(NAME, "Light 2"),
+            HOMEKIT_CHARACTERISTIC(NAME, "Lâmpada 2"),
             &lightbulb_on_2,
             NULL
         }),
 
         HOMEKIT_SERVICE(LIGHTBULB, .characteristics=(homekit_characteristic_t*[]){
-            HOMEKIT_CHARACTERISTIC(NAME, "Light 3"),
+            HOMEKIT_CHARACTERISTIC(NAME, "Lâmpada 3"),
             &lightbulb_on_3,
             NULL
         }),
 
         HOMEKIT_SERVICE(LIGHTBULB, .characteristics=(homekit_characteristic_t*[]){
-            HOMEKIT_CHARACTERISTIC(NAME, "Light 4"),
+            HOMEKIT_CHARACTERISTIC(NAME, "Lâmpada 4"),
             &lightbulb_on_4,
             NULL
         }),
@@ -270,9 +275,8 @@ homekit_accessory_t *accessories[] = {
 
 homekit_server_config_t config = {
     .accessories = accessories,
-    .password = "201-01-985"
-//    .password = "190-11-978"    //changed tobe valid
-//    .password = "111-11-111"    //default easy
+    .password = "736-24-212",
+    .setupId="1QJ8",
 };
 
 void on_wifi_ready() {
@@ -283,30 +287,34 @@ void create_accessory_name() {
     uint8_t macaddr[6];
     sdk_wifi_get_macaddr(STATION_IF, macaddr);
 
-    int name_len = snprintf(NULL, 0, "ESP12F 4CH %02X:%02X:%02X",
-            macaddr[3], macaddr[4], macaddr[5]);
+    int name_len = snprintf(NULL, 0, "4Lâmpadas-%02X%02X%02X",
+                            macaddr[3], macaddr[4], macaddr[5]);
     char *name_value = malloc(name_len+1);
-    snprintf(name_value, name_len+1, "ESP12F 4CH %02X:%02X:%02X",
-            macaddr[3], macaddr[4], macaddr[5]);
+    snprintf(name_value, name_len+1, "4Lâmpadas-%02X%02X%02X",
+             macaddr[3], macaddr[4], macaddr[5]);
 
     name.value = HOMEKIT_STRING(name_value);
+    
+    char *serial_value = malloc(13);
+    snprintf(serial_value, 13, "%02X%02X%02X%02X%02X%02X", macaddr[0], macaddr[1], macaddr[2], macaddr[3], macaddr[4], macaddr[5]);
+    serial.value = HOMEKIT_STRING(serial_value);
 }
 
 
 void user_init(void) {
     uart_set_baud(0, 115200);
     create_accessory_name();
-    wifi_config_init("4LIGHT", NULL, on_wifi_ready);
+    wifi_config_init("4Lâmpadas", NULL, on_wifi_ready);
     gpio_init();
 
 
     button_config_t config = BUTTON_CONFIG(
-        button_active_high,
-        .long_press_time = 1000,
+        button_active_low,
+        .long_press_time = 3000,
         .max_repeat_presses = 3,
     );
 
-// 4000 = 4s long press => 15000/3 = 1s medium press
+
     if (button_create(BUTTON_PIN, config, button_callback, NULL)) {
         printf("Failed to initialize button\n");
     }
