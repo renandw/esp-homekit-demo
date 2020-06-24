@@ -1,6 +1,6 @@
 #pragma once
 
-#define LED_GPIO 13
+#define LED_GPIO 2
 // Which logical level correspond to lit LED (0 or 1)
 #define LED_ACTIVE_LEVEL 0
 
