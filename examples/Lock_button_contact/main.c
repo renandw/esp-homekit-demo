@@ -4,7 +4,7 @@ Features: botão programável; sensor de contato
 Maiores possibilidades para automação do acessório.
  */
 
-// Bibliotecas a serem inclúidas:
+// Bibliotecas a serem incluídas:
 #include <stdio.h>
 #include <espressif/esp_wifi.h>
 #include <espressif/esp_sta.h>
