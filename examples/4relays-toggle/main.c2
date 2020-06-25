@@ -345,6 +345,7 @@ bool wifi_is_configured() {
 void user_init(void) {
     uart_set_baud(0, 115200);
     create_accessory_name();
+    wifi_config_init2(WIFI_AP_NAME, WIFI_AP_PASSWORD, on_wifi_config_event);
     gpio_init();
     status = led_status_init(led_gpio, LED_ACTIVE_LEVEL);
 
@@ -376,5 +377,4 @@ void user_init(void) {
     }
 
     led_status_set(status, wifi_is_configured() ? &mode_connecting_to_wifi : &mode_no_wifi_config);
-    wifi_config_init2(WIFI_AP_NAME, WIFI_AP_PASSWORD, on_wifi_config_event);
 }
