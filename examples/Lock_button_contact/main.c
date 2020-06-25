@@ -129,9 +129,13 @@ void button_callback(button_event_t event, void* context) {
             printf("double press\n");
             homekit_characteristic_notify(&button_event, HOMEKIT_UINT8(1));
             break;
-        case button_event_long_press:
-            printf("long press\n");
+        case button_event_tripple_press;
+            printf("tripple press\n");
             homekit_characteristic_notify(&button_event, HOMEKIT_UINT8(2));
+            break;
+        case button_event_long_press:
+            printf("long press -- reseting configuration\n");
+            reset_configuration();
             break;
         default:
             printf("unknown button event: %d\n", event);
@@ -154,6 +158,8 @@ typedef enum {
 
 
 homekit_characteristic_t name = HOMEKIT_CHARACTERISTIC_(NAME, "Lock");
+homekit_characteristic_t serial = HOMEKIT_CHARACTERISTIC_(SERIAL_NUMBER, NULL);
+
 
 homekit_characteristic_t lock_current_state = HOMEKIT_CHARACTERISTIC_(
     LOCK_CURRENT_STATE,
@@ -251,7 +257,6 @@ void contact_sensor_callback(uint8_t gpio, contact_sensor_state_t state) {
     }
 }
 
-homekit_characteristic_t serial = HOMEKIT_CHARACTERISTIC_(SERIAL_NUMBER, NULL);
 
 homekit_accessory_t *accessories[] = {
     HOMEKIT_ACCESSORY(.id=1, .category=homekit_accessory_category_door_lock, .services=(homekit_service_t*[]){
