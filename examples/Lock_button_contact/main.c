@@ -4,7 +4,7 @@ Features: botão programável; sensor de contato
 Maiores possibilidades para automação do acessório.
  */
 
-// Bibliotecas a serem incluídas:
+// Bibliotecas a serem inclúidas:
 #include <stdio.h>
 #include <espressif/esp_wifi.h>
 #include <espressif/esp_sta.h>
@@ -129,7 +129,7 @@ void button_callback(button_event_t event, void* context) {
             printf("double press\n");
             homekit_characteristic_notify(&button_event, HOMEKIT_UINT8(1));
             break;
-        case button_event_tripple_press;
+        case button_event_tripple_press:
             printf("tripple press\n");
             homekit_characteristic_notify(&button_event, HOMEKIT_UINT8(2));
             break;
@@ -387,7 +387,7 @@ void user_init(void) {
 
     button_config_t config = BUTTON_CONFIG(
         button_active_low,
-        .long_press_time = 5000,
+        .long_press_time = 10000,
         .max_repeat_presses = 3,
     );
 
