@@ -20,13 +20,11 @@
 #include "config.h"
 
 // The GPIO pin that is connected to RELAY#1 on the board.
-const int relay_gpio_1 = 1;
+const int relay_gpio_1 = 16;
 // The GPIO pin that is connected to RELAY#2 on the board.
-const int relay_gpio_2 = 3;
+const int relay_gpio_2 = 9;
 // The GPIO pin that is connected to RELAY#3 on the board.
 const int relay_gpio_3 = 13;
-// The GPIO pin that is connected to RELAY#4 on the board.
-const int relay_gpio_4 = 16;
 
 // The GPIO pin that is connected to the LED on the ESP12F.
 const int led_gpio = LED_GPIO;
@@ -53,13 +51,6 @@ const int led_gpio = LED_GPIO;
 #error TTOGGLE_PIN_3 is not specified
 #endif
 
-#define TOGGLE_PIN_4 12
-#ifndef TOGGLE_PIN_4
-#error TOGGLE_PIN_4 is not specified
-#endif
-
-
-
 
 // NOVO
 // one short blink every 3 seconds
@@ -83,7 +74,6 @@ static led_status_t status;
 void lightbulb_on_1_callback(homekit_characteristic_t *_ch, homekit_value_t on, void *context);
 void lightbulb_on_2_callback(homekit_characteristic_t *_ch, homekit_value_t on, void *context);
 void lightbulb_on_3_callback(homekit_characteristic_t *_ch, homekit_value_t on, void *context);
-void lightbulb_on_4_callback(homekit_characteristic_t *_ch, homekit_value_t on, void *context);
 
 
 void relay_write_1(bool on) {
@@ -96,10 +86,6 @@ void relay_write_2(bool on) {
 
 void relay_write_3(bool on) {
     gpio_write(relay_gpio_3, on ? 0 : 1);
-}
-
-void relay_write_4(bool on) {
-    gpio_write(relay_gpio_4, on ? 0 : 1);
 }
 
 
@@ -142,10 +128,6 @@ homekit_characteristic_t lightbulb_on_3 = HOMEKIT_CHARACTERISTIC_(
     ON, false, .callback=HOMEKIT_CHARACTERISTIC_CALLBACK(lightbulb_on_3_callback)
 );
 
-homekit_characteristic_t lightbulb_on_4 = HOMEKIT_CHARACTERISTIC_(
-    ON, false, .callback=HOMEKIT_CHARACTERISTIC_CALLBACK(lightbulb_on_4_callback)
-);
-
 
 void gpio_init() {
   
@@ -158,14 +140,10 @@ void gpio_init() {
     gpio_enable(relay_gpio_3, GPIO_OUTPUT);
     relay_write_3(lightbulb_on_3.value.bool_value);
 
-    gpio_enable(relay_gpio_4, GPIO_OUTPUT);
-    relay_write_4(lightbulb_on_4.value.bool_value);
-
     gpio_enable(BUTTON_PIN,  GPIO_INPUT);
     gpio_enable(TOGGLE_PIN_1, GPIO_INPUT);
     gpio_enable(TOGGLE_PIN_2, GPIO_INPUT);
     gpio_enable(TOGGLE_PIN_3, GPIO_INPUT);
-    gpio_enable(TOGGLE_PIN_4, GPIO_INPUT);
 }
 
 void lightbulb_on_1_callback(homekit_characteristic_t *_ch, homekit_value_t on, void *context) {
@@ -178,10 +156,6 @@ void lightbulb_on_2_callback(homekit_characteristic_t *_ch, homekit_value_t on, 
 
 void lightbulb_on_3_callback(homekit_characteristic_t *_ch, homekit_value_t on, void *context) {
     relay_write_3(lightbulb_on_3.value.bool_value);
-}
-
-void lightbulb_on_4_callback(homekit_characteristic_t *_ch, homekit_value_t on, void *context) {
-    relay_write_4(lightbulb_on_4.value.bool_value);
 }
 
 
@@ -214,13 +188,6 @@ void toggle_callback_3(bool high, void *context) {
     lightbulb_on_3.value.bool_value = !lightbulb_on_3.value.bool_value;
     relay_write_3(lightbulb_on_3.value.bool_value);
     homekit_characteristic_notify(&lightbulb_on_3, lightbulb_on_3.value);
-}
-
-void toggle_callback_4(bool high, void *context) {
-    printf("Toggling relay 4");
-    lightbulb_on_4.value.bool_value = !lightbulb_on_4.value.bool_value;
-    relay_write_4(lightbulb_on_4.value.bool_value);
-    homekit_characteristic_notify(&lightbulb_on_4, lightbulb_on_4.value);
 }
 
 void light_identify(homekit_value_t _value) {
@@ -267,12 +234,6 @@ homekit_accessory_t *accessories[] = {
             &lightbulb_on_3,
             NULL
         }),
-
-        HOMEKIT_SERVICE(LIGHTBULB, .characteristics=(homekit_characteristic_t*[]){
-            HOMEKIT_CHARACTERISTIC(NAME, "Lâmpada 4"),
-            &lightbulb_on_4,
-            NULL
-        }),
         NULL
     }),
     NULL
@@ -298,7 +259,7 @@ static bool initialized = false;
 homekit_server_config_t config = {
     .accessories = accessories,
     .password = ACCESSORY_SETUP_CODE,
-    .setupId="1QJ8",
+    .setupId="1QJ8", // acessory_category ci=8
     .on_event = on_homekit_event,
 };
 
@@ -345,7 +306,6 @@ bool wifi_is_configured() {
 void user_init(void) {
     uart_set_baud(0, 115200);
     create_accessory_name();
-    wifi_config_init2(WIFI_AP_NAME, WIFI_AP_PASSWORD, on_wifi_config_event);
     gpio_init();
     status = led_status_init(led_gpio, LED_ACTIVE_LEVEL);
 
@@ -372,9 +332,6 @@ void user_init(void) {
         printf("Failed to initialize toggle 3 \n");
     }
 
-    if (toggle_create(TOGGLE_PIN_4, toggle_callback_4, NULL)) {
-        printf("Failed to initialize toggle 4 \n");
-    }
-
     led_status_set(status, wifi_is_configured() ? &mode_connecting_to_wifi : &mode_no_wifi_config);
+    wifi_config_init2(WIFI_AP_NAME, WIFI_AP_PASSWORD, on_wifi_config_event);
 }
