@@ -12,8 +12,8 @@
 // Which logical level correspond to pressed button
 #define BUTTON_ACTIVE_LEVEL 0
 
-#define ACCESSORY_NAME "Lock Button Contact"
-#define ACCESSORY_SETUP_CODE "111-11-111"
+#define ACCESSORY_NAME "Fechadura"
+#define ACCESSORY_SETUP_CODE "736-24-212"
 
-#define WIFI_AP_NAME "Lock_Button_contact"
-#define WIFI_AP_PASSWORD "vamosversevai"
+#define WIFI_AP_NAME "Fechadura"
+#define WIFI_AP_PASSWORD "Fechadura"
