@@ -334,4 +334,5 @@ void user_init(void) {
 
     led_status_set(status, wifi_is_configured() ? &mode_connecting_to_wifi : &mode_no_wifi_config);
     wifi_config_init2(WIFI_AP_NAME, WIFI_AP_PASSWORD, on_wifi_config_event);
+    //WIFI_AP_NAME and WIFI_AP_PASSWORD are modified in config.h
 }
