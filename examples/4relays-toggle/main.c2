@@ -259,7 +259,7 @@ static bool initialized = false;
 homekit_server_config_t config = {
     .accessories = accessories,
     .password = ACCESSORY_SETUP_CODE,
-    .setupId="1QJ8", // acessory_category ci=8
+    .setupId="7EN2", // acessory_category ci=8
     .on_event = on_homekit_event,
 };
 
