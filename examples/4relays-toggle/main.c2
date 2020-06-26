@@ -20,11 +20,11 @@
 #include "config.h"
 
 // The GPIO pin that is connected to RELAY#1 on the board.
-const int relay_gpio_1 = 16;
+const int relay_gpio_1 = 12;
 // The GPIO pin that is connected to RELAY#2 on the board.
-const int relay_gpio_2 = 9;
+const int relay_gpio_2 = 13;
 // The GPIO pin that is connected to RELAY#3 on the board.
-const int relay_gpio_3 = 13;
+const int relay_gpio_3 = 16;
 
 // The GPIO pin that is connected to the LED on the ESP12F.
 const int led_gpio = LED_GPIO;
@@ -36,12 +36,12 @@ const int led_gpio = LED_GPIO;
 #endif
 
 // The GPIO pin that is connected to the header on the board(external switch).
-#define TOGGLE_PIN_1 5
+#define TOGGLE_PIN_1 4
 #ifndef TOGGLE_PIN_1
 #error TOGGLE_PIN_1 is not specified
 #endif
 
-#define TOGGLE_PIN_2 4
+#define TOGGLE_PIN_2 5
 #ifndef TOGGLE_PIN_2
 #error TOGGLE_PIN_2 is not specified
 #endif
@@ -311,7 +311,7 @@ void user_init(void) {
 
     button_config_t config = BUTTON_CONFIG(
         button_active_low,
-        .long_press_time = 3000,
+        .long_press_time = 10000,
         .max_repeat_presses = 3,
     );
 
