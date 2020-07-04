@@ -8,24 +8,12 @@
 
 #include <homekit/homekit.h>
 #include <homekit/characteristics.h>
-#include "wifi.h"
+#include <wifi_config.h>
 
-
+#define SENSOR_PIN 5
 #ifndef SENSOR_PIN
 #error SENSOR_PIN is not specified
 #endif
-
-
-static void wifi_init() {
-    struct sdk_station_config wifi_config = {
-        .ssid = WIFI_SSID,
-        .password = WIFI_PASSWORD,
-    };
-
-    sdk_wifi_set_opmode(STATION_MODE);
-    sdk_wifi_station_set_config(&wifi_config);
-    sdk_wifi_station_connect();
-}
 
 
 void skimmer_sensor_identify(homekit_value_t _value) {
@@ -94,12 +82,12 @@ homekit_server_config_t config = {
     .password = "111-11-111"
 };
 
-void user_init(void) {
-    uart_set_baud(0, 9600);
-    wifi_init();
+void on_wifi_ready() {
     homekit_server_init(&config);
-    skimmer_sensor_init();
 }
 
-
-// inspired by https://github.com/GPL71/ESP8266-Homekit-Sensor/blob/master/skimmer_sensor.c
+void user_init(void) {
+    uart_set_baud(0, 115200);
+    wifi_config_init("my-accessory", NULL, on_wifi_ready);
+    skimmer_sensor_init();
+}
