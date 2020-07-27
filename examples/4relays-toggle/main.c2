@@ -48,7 +48,7 @@ const int led_gpio = LED_GPIO;
 
 #define TOGGLE_PIN_3 14
 #ifndef TOGGLE_PIN_3
-#error TTOGGLE_PIN_3 is not specified
+#error TOGGLE_PIN_3 is not specified
 #endif
 
 
@@ -212,7 +212,7 @@ homekit_accessory_t *accessories[] = {
             &name,
             &serial,
             HOMEKIT_CHARACTERISTIC(FIRMWARE_REVISION, "3.5"),
-            HOMEKIT_CHARACTERISTIC(HARDWARE_REVISION, "2.0"),
+            HOMEKIT_CHARACTERISTIC(HARDWARE_REVISION, "3 .0"),
             NULL
         },
         ),
