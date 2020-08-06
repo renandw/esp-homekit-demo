@@ -46,12 +46,12 @@ const int led_gpio = 2;
 #endif
 
 
-void lightbulb_on_1_callback(homekit_characteristic_t *_ch, homekit_value_t on, void *context);
-void lightbulb_on_2_callback(homekit_characteristic_t *_ch, homekit_value_t on, void *context);
-void lightbulb_on_3_callback(homekit_characteristic_t *_ch, homekit_value_t on, void *context);
-void lightbulb_on_4_callback(homekit_characteristic_t *_ch, homekit_value_t on, void *context);
-void lightbulb_on_5_callback(homekit_characteristic_t *_ch, homekit_value_t on, void *context);
-void lightbulb_on_6_callback(homekit_characteristic_t *_ch, homekit_value_t on, void *context);
+void switch_on_1_callback(homekit_accessory_t *acc, homekit_characteristic_t *_ch, homekit_value_t on, void *context);
+void switch_on_2_callback(homekit_accessory_t *acc, homekit_characteristic_t *_ch, homekit_value_t on, void *context);
+void switch_on_3_callback(homekit_accessory_t *acc, homekit_characteristic_t *_ch, homekit_value_t on, void *context);
+void switch_on_4_callback(homekit_accessory_t *acc, homekit_characteristic_t *_ch, homekit_value_t on, void *context);
+void switch_on_5_callback(homekit_accessory_t *acc, homekit_characteristic_t *_ch, homekit_value_t on, void *context);
+void switch_on_6_callback(homekit_accessory_t *acc, homekit_characteristic_t *_ch, homekit_value_t on, void *context);
 
 
 void relay_write_1(bool on) {
@@ -107,28 +107,28 @@ void reset_configuration() {
     xTaskCreate(reset_configuration_task, "Reset configuration", 256, NULL, 2, NULL);
 }
 
-homekit_characteristic_t lightbulb_on_1 = HOMEKIT_CHARACTERISTIC_(
-    ON, false, .callback=HOMEKIT_CHARACTERISTIC_CALLBACK(lightbulb_on_1_callback)
+homekit_characteristic_t switch_on_1 = HOMEKIT_CHARACTERISTIC_(
+    ON, false, .callback=HOMEKIT_CHARACTERISTIC_CALLBACK(switch_on_1_callback)
 );
 
-homekit_characteristic_t lightbulb_on_2 = HOMEKIT_CHARACTERISTIC_(
-    ON, false, .callback=HOMEKIT_CHARACTERISTIC_CALLBACK(lightbulb_on_2_callback)
+homekit_characteristic_t switch_on_2 = HOMEKIT_CHARACTERISTIC_(
+    ON, false, .callback=HOMEKIT_CHARACTERISTIC_CALLBACK(switch_on_2_callback)
 );
 
-homekit_characteristic_t lightbulb_on_3 = HOMEKIT_CHARACTERISTIC_(
-    ON, false, .callback=HOMEKIT_CHARACTERISTIC_CALLBACK(lightbulb_on_3_callback)
+homekit_characteristic_t switch_on_3 = HOMEKIT_CHARACTERISTIC_(
+    ON, false, .callback=HOMEKIT_CHARACTERISTIC_CALLBACK(switch_on_3_callback)
 );
 
-homekit_characteristic_t lightbulb_on_4 = HOMEKIT_CHARACTERISTIC_(
-    ON, false, .callback=HOMEKIT_CHARACTERISTIC_CALLBACK(lightbulb_on_4_callback)
+homekit_characteristic_t switch_on_4 = HOMEKIT_CHARACTERISTIC_(
+    ON, false, .callback=HOMEKIT_CHARACTERISTIC_CALLBACK(switch_on_4_callback)
 );
 
-homekit_characteristic_t lightbulb_on_5 = HOMEKIT_CHARACTERISTIC_(
-    ON, false, .callback=HOMEKIT_CHARACTERISTIC_CALLBACK(lightbulb_on_5_callback)
+homekit_characteristic_t switch_on_5 = HOMEKIT_CHARACTERISTIC_(
+    ON, false, .callback=HOMEKIT_CHARACTERISTIC_CALLBACK(switch_on_5_callback)
 );
 
-homekit_characteristic_t lightbulb_on_6 = HOMEKIT_CHARACTERISTIC_(
-    ON, false, .callback=HOMEKIT_CHARACTERISTIC_CALLBACK(lightbulb_on_6_callback)
+homekit_characteristic_t switch_on_6 = HOMEKIT_CHARACTERISTIC_(
+    ON, false, .callback=HOMEKIT_CHARACTERISTIC_CALLBACK(switch_on_6_callback)
 );
 
 void gpio_init() {
@@ -136,70 +136,70 @@ void gpio_init() {
     led_write(false);
 
     gpio_enable(relay_gpio_1, GPIO_OUTPUT);
-    relay_write_1(lightbulb_on_1.value.bool_value);
+    relay_write_1(switch_on_1.value.bool_value);
 
     gpio_enable(relay_gpio_2, GPIO_OUTPUT);
-    relay_write_2(lightbulb_on_2.value.bool_value);
+    relay_write_2(switch_on_2.value.bool_value);
 
     gpio_enable(relay_gpio_3, GPIO_OUTPUT);
-    relay_write_3(lightbulb_on_3.value.bool_value);
+    relay_write_3(switch_on_3.value.bool_value);
 
     gpio_enable(relay_gpio_4, GPIO_OUTPUT);
-    relay_write_4(lightbulb_on_4.value.bool_value);
+    relay_write_4(switch_on_4.value.bool_value);
 
     gpio_enable(relay_gpio_5, GPIO_OUTPUT);
-    relay_write_5(lightbulb_on_5.value.bool_value);
+    relay_write_5(switch_on_5.value.bool_value);
 
-    gpio_enable(relay_gpio_5, GPIO_OUTPUT);
-    relay_write_5(lightbulb_on_5.value.bool_value);
+    gpio_enable(relay_gpio_6, GPIO_OUTPUT);
+    relay_write_5(switch_on_6.value.bool_value);
     
     gpio_enable(BUTTON_PIN,  GPIO_INPUT);
     gpio_enable(BUTTON_PIN_2,  GPIO_INPUT);
 }
 
-void lightbulb_on_1_callback(homekit_characteristic_t *_ch, homekit_value_t on, void *context) {
-    relay_write_1(lightbulb_on_1.value.bool_value);
+void switch_on_1_callback(homekit_accessory_t *acc, homekit_characteristic_t *_ch, homekit_value_t on, void *context) {
+    relay_write_1(switch_on_1.value.bool_value);
 }
 
-void lightbulb_on_2_callback(homekit_characteristic_t *_ch, homekit_value_t on, void *context) {
-    relay_write_2(lightbulb_on_2.value.bool_value);
+void switch_on_2_callback(homekit_accessory_t *acc, homekit_characteristic_t *_ch, homekit_value_t on, void *context) {
+    relay_write_2(switch_on_1.value.bool_value);
 }
 
-void lightbulb_on_3_callback(homekit_characteristic_t *_ch, homekit_value_t on, void *context) {
-    relay_write_3(lightbulb_on_3.value.bool_value);
+void switch_on_3_callback(homekit_accessory_t *acc, homekit_characteristic_t *_ch, homekit_value_t on, void *context) {
+    relay_write_3(switch_on_3.value.bool_value);
 }
 
-void lightbulb_on_4_callback(homekit_characteristic_t *_ch, homekit_value_t on, void *context) {
-    relay_write_4(lightbulb_on_4.value.bool_value);
+void switch_on_4_callback(homekit_accessory_t *acc, homekit_characteristic_t *_ch, homekit_value_t on, void *context) {
+    relay_write_4(switch_on_4.value.bool_value);
 }
 
-void lightbulb_on_5_callback(homekit_characteristic_t *_ch, homekit_value_t on, void *context) {
-    relay_write_5(lightbulb_on_5.value.bool_value);
+void switch_on_5_callback(homekit_accessory_t *acc, homekit_characteristic_t *_ch, homekit_value_t on, void *context) {
+    relay_write_5(switch_on_5.value.bool_value);
 }
 
-void lightbulb_on_6_callback(homekit_characteristic_t *_ch, homekit_value_t on, void *context) {
-    relay_write_6(lightbulb_on_6.value.bool_value);
+void switch_on_6_callback(homekit_accessory_t *acc, homekit_characteristic_t *_ch, homekit_value_t on, void *context) {
+    relay_write_6(switch_on_6.value.bool_value);
 }
 
 void button_callback(button_event_t event, void* context) {
     switch (event) {
         case button_event_single_press:
           printf("SINGLE PRESS\n");
-          lightbulb_on_1.value.bool_value = !lightbulb_on_1.value.bool_value;
-          relay_write_1(lightbulb_on_1.value.bool_value);
-          homekit_characteristic_notify(&lightbulb_on_1, lightbulb_on_1.value);
+          switch_on_1.value.bool_value = !switch_on_1.value.bool_value;
+          relay_write_1(switch_on_1.value.bool_value);
+          homekit_characteristic_notify(&switch_on_1, switch_on_1.value);
           break;
         case button_event_double_press:
           printf("DOUBLE PRESS\n");
-          lightbulb_on_2.value.bool_value = !lightbulb_on_2.value.bool_value;
-          relay_write_2(lightbulb_on_2.value.bool_value);
-          homekit_characteristic_notify(&lightbulb_on_2, lightbulb_on_2.value);  
+          switch_on_2.value.bool_value = !switch_on_2.value.bool_value;
+          relay_write_2(switch_on_2.value.bool_value);
+          homekit_characteristic_notify(&switch_on_2, switch_on_2.value);  
           break;
         case button_event_tripple_press:
           printf("TRIPPLE PRESS\n");
-          lightbulb_on_3.value.bool_value = !lightbulb_on_3.value.bool_value;
-          relay_write_3(lightbulb_on_3.value.bool_value);
-          homekit_characteristic_notify(&lightbulb_on_3, lightbulb_on_3.value);  
+          switch_on_3.value.bool_value = !switch_on_3.value.bool_value;
+          relay_write_3(switch_on_3.value.bool_value);
+          homekit_characteristic_notify(&switch_on_3, switch_on_3.value);  
           break;
         case button_event_long_press:
           printf("LONG PRESS\n");
@@ -214,21 +214,21 @@ void button_callback_2(button_event_t event, void* context) {
     switch (event) {
         case button_event_single_press:
           printf("SINGLE PRESS\n");
-          lightbulb_on_4.value.bool_value = !lightbulb_on_4.value.bool_value;
-          relay_write_4(lightbulb_on_4.value.bool_value);
-          homekit_characteristic_notify(&lightbulb_on_4, lightbulb_on_4.value);
+          switch_on_4.value.bool_value = !switch_on_4.value.bool_value;
+          relay_write_4(switch_on_4.value.bool_value);
+          homekit_characteristic_notify(&switch_on_4, switch_on_4.value);
           break;
         case button_event_double_press:
           printf("DOUBLE PRESS\n");
-          lightbulb_on_5.value.bool_value = !lightbulb_on_5.value.bool_value;
-          relay_write_5(lightbulb_on_5.value.bool_value);
-          homekit_characteristic_notify(&lightbulb_on_5, lightbulb_on_5.value);  
+          switch_on_5.value.bool_value = !switch_on_5.value.bool_value;
+          relay_write_5(switch_on_5.value.bool_value);
+          homekit_characteristic_notify(&switch_on_5, switch_on_5.value);  
           break;
         case button_event_tripple_press:
           printf("TRIPPLE PRESS\n");
-          lightbulb_on_6.value.bool_value = !lightbulb_on_6.value.bool_value;
-          relay_write_6(lightbulb_on_3.value.bool_value);
-          homekit_characteristic_notify(&lightbulb_on_6, lightbulb_on_6.value);  
+          switch_on_6.value.bool_value = !switch_on_6.value.bool_value;
+          relay_write_6(switch_on_3.value.bool_value);
+          homekit_characteristic_notify(&switch_on_6, switch_on_6.value);  
           break;
         //case button_event_long_press:
         //  printf("LONG PRESS\n");
@@ -283,37 +283,43 @@ homekit_accessory_t *accessories[] = {
         },
         ),
 
-        HOMEKIT_SERVICE(LIGHTBULB, .primary=true, .characteristics=(homekit_characteristic_t*[]){
+        HOMEKIT_SERVICE(OUTLET, .primary=true, .characteristics=(homekit_characteristic_t*[]){
 	    HOMEKIT_CHARACTERISTIC(NAME, "Lâmpada 1"),
-	    &lightbulb_on_1,
+	    &switch_on_1,
+      HOMEKIT_CHARACTERISTIC(OUTLET_IN_USE, true),
             NULL
         }),
 
-        HOMEKIT_SERVICE(LIGHTBULB, .characteristics=(homekit_characteristic_t*[]){
+        HOMEKIT_SERVICE(OUTLET, .characteristics=(homekit_characteristic_t*[]){
             HOMEKIT_CHARACTERISTIC(NAME, "Lâmpada 2"),
-            &lightbulb_on_2,
+            &switch_on_2,
+            HOMEKIT_CHARACTERISTIC(OUTLET_IN_USE, true),
             NULL
         }),
 
-        HOMEKIT_SERVICE(LIGHTBULB, .characteristics=(homekit_characteristic_t*[]){
+        HOMEKIT_SERVICE(OUTLET, .characteristics=(homekit_characteristic_t*[]){
             HOMEKIT_CHARACTERISTIC(NAME, "Lâmpada 3"),
-            &lightbulb_on_3,
+            &switch_on_3,
+            HOMEKIT_CHARACTERISTIC(OUTLET_IN_USE, true),
             NULL
         }),
 
-        HOMEKIT_SERVICE(LIGHTBULB, .characteristics=(homekit_characteristic_t*[]){
+        HOMEKIT_SERVICE(OUTLET, .characteristics=(homekit_characteristic_t*[]){
             HOMEKIT_CHARACTERISTIC(NAME, "Lâmpada 4"),
-            &lightbulb_on_4,
+            &switch_on_4,
+            HOMEKIT_CHARACTERISTIC(OUTLET_IN_USE, true),
             NULL
         }),
-        HOMEKIT_SERVICE(LIGHTBULB, .characteristics=(homekit_characteristic_t*[]){
+        HOMEKIT_SERVICE(OUTLET, .characteristics=(homekit_characteristic_t*[]){
             HOMEKIT_CHARACTERISTIC(NAME, "Lâmpada 5"),
-            &lightbulb_on_5,
+            &switch_on_5,
+            HOMEKIT_CHARACTERISTIC(OUTLET_IN_USE, true),
             NULL
         }),
-        HOMEKIT_SERVICE(LIGHTBULB, .characteristics=(homekit_characteristic_t*[]){
+        HOMEKIT_SERVICE(OUTLET, .characteristics=(homekit_characteristic_t*[]){
             HOMEKIT_CHARACTERISTIC(NAME, "Lâmpada 6"),
-            &lightbulb_on_6,
+            &switch_on_6,
+            HOMEKIT_CHARACTERISTIC(OUTLET_IN_USE, true),
             NULL
         }),
         NULL
