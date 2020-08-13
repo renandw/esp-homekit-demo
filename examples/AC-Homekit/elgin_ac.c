@@ -742,11 +742,11 @@ homekit_accessory_t *accessories[] = {
 //            &switch_on,
 //            NULL
 //        }),
-        		HOMEKIT_SERVICE(TEMPERATURE_SENSOR, .primary=true, .characteristics=(homekit_characteristic_t*[]) {
-            HOMEKIT_CHARACTERISTIC(NAME, "Temperature Sensor"),
-			&temperature,
-            NULL
-        }),
+//        		HOMEKIT_SERVICE(TEMPERATURE_SENSOR, .primary=true, .characteristics=(homekit_characteristic_t*[]) {
+//            HOMEKIT_CHARACTERISTIC(NAME, "Temperature Sensor"),
+//			&temperature,
+//            NULL
+//        }),
 //		 HOMEKIT_SERVICE(LIGHT_SENSOR, .primary=true, .characteristics=(homekit_characteristic_t*[]){
 //            HOMEKIT_CHARACTERISTIC(NAME, "Light Sensor"),
 //            &currentAmbientLightLevel,
@@ -757,11 +757,11 @@ homekit_accessory_t *accessories[] = {
 //            &motion_detected,
 //            NULL
 //       }),
-        HOMEKIT_SERVICE(HUMIDITY_SENSOR, .characteristics=(homekit_characteristic_t*[]) {
-            HOMEKIT_CHARACTERISTIC(NAME, "Humidity Sensor"),
-			&humidity,
-            NULL
-        }),
+//        HOMEKIT_SERVICE(HUMIDITY_SENSOR, .characteristics=(homekit_characteristic_t*[]) {
+//            HOMEKIT_CHARACTERISTIC(NAME, "Humidity Sensor"),
+//			&humidity,
+//            NULL
+//        }),
     NULL
  }),
  NULL
@@ -939,7 +939,7 @@ snprintf(serial_value, 13, "%02X%02X%02X%02X%02X%02X", macaddr[0], macaddr[1], m
 
 homekit_server_config_t config = {
     .accessories = accessories,
-    .password = "222-22-222",
+    .password = "222-22-222", //ci = 9
 	.on_event = on_event,
 };
 
