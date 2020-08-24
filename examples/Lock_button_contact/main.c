@@ -322,6 +322,7 @@ homekit_server_config_t config = {
     //observar esta mudança
     .password = ACCESSORY_SETUP_CODE,
     .on_event = on_homekit_event,
+    //ci=6
 };
 
 void on_wifi_config_event(wifi_config_event_t event) {
