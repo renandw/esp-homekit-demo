@@ -22,9 +22,9 @@ const int relay_gpio_1 = 4;
 // The GPIO pin that is connected to RELAY#2 on the board.
 const int relay_gpio_2 = 5;
 // The GPIO pin that is connected to RELAY#3 on the board.
-const int relay_gpio_3 = 13;
+const int relay_gpio_3 = 12;
 // The GPIO pin that is connected to RELAY#4 on the board.
-const int relay_gpio_4 = 12;
+const int relay_gpio_4 = 13;
 // The GPIO pin that is connected to RELAY#5 on the board.
 const int relay_gpio_5 = 14;
 // The GPIO pin that is connected to RELAY#5 on the board.
@@ -151,7 +151,7 @@ void gpio_init() {
     relay_write_5(switch_on_5.value.bool_value);
 
     gpio_enable(relay_gpio_6, GPIO_OUTPUT);
-    relay_write_5(switch_on_6.value.bool_value);
+    relay_write_6(switch_on_6.value.bool_value);
     
     gpio_enable(BUTTON_PIN,  GPIO_INPUT);
     gpio_enable(BUTTON_PIN_2,  GPIO_INPUT);
@@ -162,7 +162,7 @@ void switch_on_1_callback(homekit_accessory_t *acc, homekit_characteristic_t *_c
 }
 
 void switch_on_2_callback(homekit_accessory_t *acc, homekit_characteristic_t *_ch, homekit_value_t on, void *context) {
-    relay_write_2(switch_on_1.value.bool_value);
+    relay_write_2(switch_on_2.value.bool_value);
 }
 
 void switch_on_3_callback(homekit_accessory_t *acc, homekit_characteristic_t *_ch, homekit_value_t on, void *context) {
@@ -227,7 +227,7 @@ void button_callback_2(button_event_t event, void* context) {
         case button_event_tripple_press:
           printf("TRIPPLE PRESS\n");
           switch_on_6.value.bool_value = !switch_on_6.value.bool_value;
-          relay_write_6(switch_on_3.value.bool_value);
+          relay_write_6(switch_on_6.value.bool_value);
           homekit_characteristic_notify(&switch_on_6, switch_on_6.value);  
           break;
         //case button_event_long_press:
@@ -262,7 +262,7 @@ void light_identify(homekit_value_t _value) {
     xTaskCreate(light_identify_task, "Light identify", 128, NULL, 2, NULL);
 }
 
-homekit_characteristic_t name = HOMEKIT_CHARACTERISTIC_(NAME, "4 Lâmpadas");
+homekit_characteristic_t name = HOMEKIT_CHARACTERISTIC_(NAME, "6 Lâmpadas");
 homekit_characteristic_t serial = HOMEKIT_CHARACTERISTIC_(SERIAL_NUMBER, NULL);
 
 
@@ -274,7 +274,7 @@ homekit_accessory_t *accessories[] = {
             HOMEKIT_SERVICE(ACCESSORY_INFORMATION, .characteristics=(homekit_characteristic_t*[]){
             HOMEKIT_CHARACTERISTIC(IDENTIFY, light_identify),
             HOMEKIT_CHARACTERISTIC(MANUFACTURER, "renandw"),
-            HOMEKIT_CHARACTERISTIC(MODEL, "4chrelay"),
+            HOMEKIT_CHARACTERISTIC(MODEL, "6CHRelay"),
             &name,
             &serial,
             HOMEKIT_CHARACTERISTIC(FIRMWARE_REVISION, "3.0"),
@@ -358,7 +358,7 @@ void create_accessory_name() {
 void user_init(void) {
     uart_set_baud(0, 115200);
     create_accessory_name();
-    wifi_config_init("4Lâmpadas", NULL, on_wifi_ready);
+    wifi_config_init("6Lâmpadas", NULL, on_wifi_ready);
     gpio_init();
 
 
