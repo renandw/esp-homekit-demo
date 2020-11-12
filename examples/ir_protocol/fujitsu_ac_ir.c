@@ -71,16 +71,16 @@ static void print_state(const char *prompt, fujitsu_ac_state_t *state) {
 
 static fujitsu_ac_model model;
 static ir_generic_config_t fujitsu_ac_ir_config = {
-    .header_mark = 3200,
-    .header_space = -1600,
+    .header_mark = 9000,
+    .header_space = -4500,
 
-    .bit1_mark = 400,
-    .bit1_space = -1200,
+    .bit1_mark = 565,
+    .bit1_space = -1700,
 
-    .bit0_mark = 400,
-    .bit0_space = -400,
+    .bit0_mark = 565,
+    .bit0_space = -565,
 
-    .footer_mark = 400,
+    .footer_mark = 565,
     .footer_space = -8000,
 
     .tolerance = 20,
@@ -124,7 +124,7 @@ int fujitsu_ac_ir_send(fujitsu_ac_state_t *state) {
             cmd[5] = 0x00;//atualizado
             break;
         case fujitsu_ac_model_ARDB1:
-            cmd[5] = 0x00;//atualizado
+            cmd[5] = 0x01;//atualizado
             break;
         }
 
@@ -190,7 +190,7 @@ static int fujitsu_ac_ir_decoder_decode(fujitsu_ac_ir_decoder_t *decoder,
     if (cmd_size < 6)
         return -1;
 
-    if (cmd[0] != 0xc3 || cmd[2] != 0xE0 || cmd[3] != 0x00 || cmd[5] != 0x00 || cmd[7] != 0x00 || cmd[8] != 0x00 || cmd[10] != 0x00)
+    if (cmd[0] != 0xc3 || cmd[2] != 0xE0 || cmd[3] != 0x00 || cmd[7] != 0x00 || cmd[8] != 0x00 || cmd[10] != 0x00)
         return -1;
 
     switch (cmd[5]) {
@@ -206,8 +206,8 @@ static int fujitsu_ac_ir_decoder_decode(fujitsu_ac_ir_decoder_t *decoder,
         state->command = cmd[5];
 
         break;
-    case 0x00:   // full state model ARRAH2E
-    case 0x00: { // full state model ARDB1
+    case 0x02:   // full state model ARRAH2E
+    case 0x01: { // full state model ARDB1
         fujitsu_ac_model model = (cmd[5] == 0x00) ? fujitsu_ac_model_ARRAH2E : fujitsu_ac_model_ARDB1;
         if (cmd[6] != 9 || cmd[7] != 0x30)
             return -1;
