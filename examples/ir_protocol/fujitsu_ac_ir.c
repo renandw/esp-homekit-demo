@@ -130,7 +130,7 @@ int fujitsu_ac_ir_send(fujitsu_ac_state_t *state) {
 
         // cmd[6] = 9; // size of extended command atualizado
         //cmd[7] = 0x30;
-        cmd[2] = (state->command == ac_cmd_turn_on) | ((state->temperature - AC_MIN_TEMPERATURE) << 4);
+        cmd[1] = (state->command == ac_cmd_turn_on) | ((state->temperature - AC_MIN_TEMPERATURE) << 4);
         cmd[6] = state->mode | (0 /* timer off */ << 4); // atualizado pro meu modelo
         cmd[4] = state->fan | (state->swing << 4); // atualizado pro meu modelo
         cmd[11] = 0x00; // timer off values
@@ -239,8 +239,8 @@ static int fujitsu_ac_ir_decoder_decode(fujitsu_ac_ir_decoder_t *decoder,
             break;
         }
 
-        state->command = cmd[2] && 0xf;
-        state->temperature = AC_MIN_TEMPERATURE + (cmd[2] >> 4);
+        state->command = cmd[1] && 0xf;
+        state->temperature = AC_MIN_TEMPERATURE + (cmd[1] >> 4);
         state->mode = cmd[6] & 0xf;  //atualizado
         state->fan = cmd[4] & 0xf;   //atualizado
         state->swing = cmd[11] >> 4; //atualizado
