@@ -34,10 +34,7 @@ const int led_gpio = LED_GPIO;
 // A porta GPIO conectada ao botão para configuração de automação e reset.
 const int button_gpio = BUTTON_GPIO;
 // A porta GPIO conectada ao sensor de contato.
-#define REED_PIN 5
-#ifndef REED_PIN
-#error REED_PIN is not specified
-#endif
+const int reed_gpio = REED_GPIO
 
 
 
@@ -222,8 +219,8 @@ void button_callback(button_event_t event, void* context) {
 }
 
 homekit_value_t door_state_getter() {
-    printf("Door state was requested (%s).\n", contact_sensor_state_get(REED_PIN) == CONTACT_OPEN ? "open" : "closed");
-    return HOMEKIT_UINT8(contact_sensor_state_get(REED_PIN) == CONTACT_OPEN ? 1 : 0);
+    printf("Door state was requested (%s).\n", contact_sensor_state_get(reed_gpio) == CONTACT_OPEN ? "open" : "closed");
+    return HOMEKIT_UINT8(contact_sensor_state_get(reed_gpio) == CONTACT_OPEN ? 1 : 0);
 }
 
 /**
@@ -361,8 +358,8 @@ void user_init(void) {
     //NOVO
     wifi_config_init2(WIFI_AP_NAME, WIFI_AP_PASSWORD, on_wifi_config_event);
 
-    printf("Using Sensor at GPIO%d.\n", REED_PIN);
-        if (contact_sensor_create(REED_PIN, contact_sensor_callback)) {
+    printf("Using Sensor at GPIO%d.\n", reed_gpio);
+        if (contact_sensor_create(reed_gpio, contact_sensor_callback)) {
             printf("Failed to initialize door\n");
         }
 
