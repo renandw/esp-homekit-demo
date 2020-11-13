@@ -34,6 +34,8 @@ const int led_gpio = LED_GPIO;
 // A porta GPIO conectada ao botão para configuração de automação e reset.
 const int button_gpio = BUTTON_GPIO;
 // A porta GPIO conectada ao sensor de contato.
+
+const int reed_gpio = REED_GPIO
 #define REED_PIN 5
 #ifndef REED_PIN
 #error REED_PIN is not specified
