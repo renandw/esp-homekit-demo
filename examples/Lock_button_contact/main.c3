@@ -251,10 +251,10 @@ homekit_accessory_t *accessories[] = {
     HOMEKIT_ACCESSORY(.id=1, .category=homekit_accessory_category_door_lock, .services=(homekit_service_t*[]){
         HOMEKIT_SERVICE(ACCESSORY_INFORMATION, .characteristics=(homekit_characteristic_t*[]){
             &name,
-            HOMEKIT_CHARACTERISTIC(MANUFACTURER, "HaPK"),
-            HOMEKIT_CHARACTERISTIC(SERIAL_NUMBER, "1"),
-            HOMEKIT_CHARACTERISTIC(MODEL, "Basic"),
-            HOMEKIT_CHARACTERISTIC(FIRMWARE_REVISION, "0.1"),
+            HOMEKIT_CHARACTERISTIC(MANUFACTURER, "renandw"),
+            &serial,
+            HOMEKIT_CHARACTERISTIC(MODEL, "Magnética"),
+            HOMEKIT_CHARACTERISTIC(FIRMWARE_REVISION, "3.1"),
             HOMEKIT_CHARACTERISTIC(IDENTIFY, lock_identify),
             NULL
         }),
@@ -271,15 +271,24 @@ homekit_accessory_t *accessories[] = {
             HOMEKIT_CHARACTERISTIC(VERSION, "1"),
             NULL
         }),
-        HOMEKIT_SERVICE(
-            CONTACT_SENSOR,
-            .primary=false,
-            .characteristics=(homekit_characteristic_t*[]) {
-              HOMEKIT_CHARACTERISTIC(NAME, "Sensor de Contato"),
-              &door_open_characteristic,
-              NULL
-          },
-      ),
+        NULL
+      }),
+      HOMEKIT_ACCESSORY(.id=2, .category=homekit_accessory_category_sensor, .services=(homekit_service_t*[]) {
+        HOMEKIT_SERVICE(ACCESSORY_INFORMATION, .characteristics=(homekit_characteristic_t*[]) {
+            HOMEKIT_CHARACTERISTIC(NAME, "Contact Sensor"),
+            HOMEKIT_CHARACTERISTIC(MANUFACTURER, "renandw"),
+            &serial,
+            HOMEKIT_CHARACTERISTIC(MODEL, "Custom"),
+            HOMEKIT_CHARACTERISTIC(FIRMWARE_REVISION, "3.1"),
+            HOMEKIT_CHARACTERISTIC(IDENTIFY, door_identify),
+            NULL
+          }),
+              
+        HOMEKIT_SERVICE(CONTACT_SENSOR,.primary=true, .characteristics=(homekit_characteristic_t*[]) {
+            HOMEKIT_CHARACTERISTIC(NAME, "Sensor de Contato"),
+            &door_open_characteristic,
+            NULL
+          }),
       NULL
    }),
    NULL
