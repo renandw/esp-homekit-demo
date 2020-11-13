@@ -1,5 +1,9 @@
 #pragma once
 
+
+#define REED_GPIO 4
+// Pin that reads input from reed sensor
+
 #define LED_GPIO 2
 // Which logical level correspond to lit LED (0 or 1)
 #define LED_ACTIVE_LEVEL 0
