@@ -36,10 +36,6 @@ const int button_gpio = BUTTON_GPIO;
 // A porta GPIO conectada ao sensor de contato.
 
 const int reed_gpio = REED_GPIO
-#define REED_PIN 5
-#ifndef REED_PIN
-#error REED_PIN is not specified
-#endif
 
 
 
@@ -231,8 +227,8 @@ void lock_unlock() {
 
 
 homekit_value_t door_state_getter() {
-    printf("Door state was requested (%s).\n", contact_sensor_state_get(REED_PIN) == CONTACT_OPEN ? "open" : "closed");
-    return HOMEKIT_UINT8(contact_sensor_state_get(REED_PIN) == CONTACT_OPEN ? 1 : 0);
+    printf("Door state was requested (%s).\n", contact_sensor_state_get(reed_gpio) == CONTACT_OPEN ? "open" : "closed");
+    return HOMEKIT_UINT8(contact_sensor_state_get(reed_gpio) == CONTACT_OPEN ? 1 : 0);
 }
 
 /**
