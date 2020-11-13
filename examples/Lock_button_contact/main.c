@@ -376,8 +376,8 @@ void user_init(void) {
     //NOVO
     wifi_config_init2(WIFI_AP_NAME, WIFI_AP_PASSWORD, on_wifi_config_event);
 
-    printf("Using Sensor at GPIO%d.\n", REED_PIN);
-        if (contact_sensor_create(REED_PIN, contact_sensor_callback)) {
+    printf("Using Sensor at GPIO%d.\n", reed_gpio);
+        if (contact_sensor_create(reed_gpio, contact_sensor_callback)) {
             printf("Failed to initialize door\n");
         }
 
