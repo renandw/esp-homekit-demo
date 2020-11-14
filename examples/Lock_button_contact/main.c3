@@ -41,7 +41,7 @@ const int reed_gpio = REED_GPIO;
 // Timeout in seconds to open lock for
 const int unlock_period = 5;  // 5 seconds
 // Which signal to send to relay to open the lock (0 or 1)
-const int relay_open_signal = 1;
+const int relay_open_signal = 0;
 
 //NOVO
 // one short blink every 3 seconds
