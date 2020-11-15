@@ -18,9 +18,9 @@
 #include <toggle.h>
 
 // The GPIO pin that is connected to RELAY#1 on the board.
-const int relay_gpio_1 = 2;
+const int relay_gpio_1 = 0;
 // The GPIO pin that is connected to RELAY#2 on the board.
-const int relay_gpio_2 = 0;
+const int relay_gpio_2 = 2;
 // The GPIO pin that is connected to RELAY#3 on the board.
 const int relay_gpio_3 = 13;
 // The GPIO pin that is connected to RELAY#4 on the board.
@@ -33,22 +33,22 @@ const int relay_gpio_4 = 16;
 #endif
 
 // The GPIO pin that is connected to the header on the board(external switch).
-#define TOGGLE_PIN_1 5
+#define TOGGLE_PIN_1 4
 #ifndef TOGGLE_PIN_1
 #error TOGGLE_PIN_1 is not specified
 #endif
 
-#define TOGGLE_PIN_2 4
+#define TOGGLE_PIN_2 5
 #ifndef TOGGLE_PIN_2
 #error TOGGLE_PIN_2 is not specified
 #endif
 
-#define TOGGLE_PIN_3 14
+#define TOGGLE_PIN_3 12
 #ifndef TOGGLE_PIN_3
 #error TOGGLE_PIN_3 is not specified
 #endif
 
-#define TOGGLE_PIN_4 12
+#define TOGGLE_PIN_4 14
 #ifndef TOGGLE_PIN_4
 #error TOGGLE_PIN_4 is not specified
 #endif
