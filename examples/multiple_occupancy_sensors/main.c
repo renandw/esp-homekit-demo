@@ -91,7 +91,7 @@ homekit_characteristic_t occupancy_detected_3 = HOMEKIT_CHARACTERISTIC_(OCCUPANC
 void sensor_callback(bool high, void *context) {
     occupancy_detected.value = HOMEKIT_UINT8(high ? 1 : 0);
     homekit_characteristic_notify(&occupancy_detected, occupancy_detected.value);
-    for (int i=0; i<2; i++) {
+    for (int i=0; i<3; i++) {
         led_write(true);
         vTaskDelay(100 / portTICK_PERIOD_MS);
         led_write(false);
@@ -105,20 +105,20 @@ void sensor_callback_2(bool high, void *context) {
     homekit_characteristic_notify(&occupancy_detected_2, occupancy_detected_2.value);
     for (int i=0; i<3; i++) {
         led_write(true);
-        vTaskDelay(100 / portTICK_PERIOD_MS);
+        vTaskDelay(200 / portTICK_PERIOD_MS);
         led_write(false);
-        vTaskDelay(100 / portTICK_PERIOD_MS);
+        vTaskDelay(200 / portTICK_PERIOD_MS);
     }
   led_write(false);
 }
 void sensor_callback_3(bool high, void *context) {
     occupancy_detected_3.value = HOMEKIT_UINT8(high ? 1 : 0);
     homekit_characteristic_notify(&occupancy_detected_3, occupancy_detected_3.value);
-    for (int i=0; i<4; i++) {
+    for (int i=0; i<3; i++) {
         led_write(true);
-        vTaskDelay(100 / portTICK_PERIOD_MS);
+        vTaskDelay(300 / portTICK_PERIOD_MS);
         led_write(false);
-        vTaskDelay(100 / portTICK_PERIOD_MS);
+        vTaskDelay(300 / portTICK_PERIOD_MS);
     }
   led_write(false);
 }
