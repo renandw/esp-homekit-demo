@@ -103,23 +103,23 @@ void reset_configuration() {
 }
 
 homekit_characteristic_t switch_on_1 = HOMEKIT_CHARACTERISTIC_(
-    ON, false, .callback=HOMEKIT_CHARACTERISTIC_CALLBACK(switch_on_1_callback)
+    ON, true, .callback=HOMEKIT_CHARACTERISTIC_CALLBACK(switch_on_1_callback)
 );
 
 homekit_characteristic_t switch_on_2 = HOMEKIT_CHARACTERISTIC_(
-    ON, false, .callback=HOMEKIT_CHARACTERISTIC_CALLBACK(switch_on_2_callback)
+    ON, true, .callback=HOMEKIT_CHARACTERISTIC_CALLBACK(switch_on_2_callback)
 );
 
 homekit_characteristic_t switch_on_3 = HOMEKIT_CHARACTERISTIC_(
-    ON, false, .callback=HOMEKIT_CHARACTERISTIC_CALLBACK(switch_on_3_callback)
+    ON, true, .callback=HOMEKIT_CHARACTERISTIC_CALLBACK(switch_on_3_callback)
 );
 
 homekit_characteristic_t switch_on_4 = HOMEKIT_CHARACTERISTIC_(
-    ON, false, .callback=HOMEKIT_CHARACTERISTIC_CALLBACK(switch_on_4_callback)
+    ON, true, .callback=HOMEKIT_CHARACTERISTIC_CALLBACK(switch_on_4_callback)
 );
 
 homekit_characteristic_t switch_on_5 = HOMEKIT_CHARACTERISTIC_(
-    ON, false, .callback=HOMEKIT_CHARACTERISTIC_CALLBACK(switch_on_5_callback)
+    ON, true, .callback=HOMEKIT_CHARACTERISTIC_CALLBACK(switch_on_5_callback)
 );
 
 // homekit_characteristic_t switch_on_6 = HOMEKIT_CHARACTERISTIC_(
@@ -234,7 +234,7 @@ homekit_accessory_t *accessories[] = {
             HOMEKIT_SERVICE(ACCESSORY_INFORMATION, .characteristics=(homekit_characteristic_t*[]){
             HOMEKIT_CHARACTERISTIC(IDENTIFY, light_identify),
             HOMEKIT_CHARACTERISTIC(MANUFACTURER, "renandw"),
-            HOMEKIT_CHARACTERISTIC(MODEL, "Área e Sala de estar"),
+            HOMEKIT_CHARACTERISTIC(MODEL, "Área"),
             &name,
             &serial,
             HOMEKIT_CHARACTERISTIC(FIRMWARE_REVISION, "4.0"),
@@ -263,7 +263,24 @@ homekit_accessory_t *accessories[] = {
             HOMEKIT_CHARACTERISTIC(OUTLET_IN_USE, true),
             NULL
         }),
-
+        NULL,
+      }),
+      
+      HOMEKIT_ACCESSORY(
+            .id=2,
+            .category=homekit_accessory_category_switch,
+            .services=(homekit_service_t*[]){
+              HOMEKIT_SERVICE(ACCESSORY_INFORMATION, .characteristics=(homekit_characteristic_t*[]){
+              HOMEKIT_CHARACTERISTIC(IDENTIFY, light_identify),
+              HOMEKIT_CHARACTERISTIC(MANUFACTURER, "renandw"),
+              HOMEKIT_CHARACTERISTIC(MODEL, "Sala de estar"),
+              &name,
+              &serial,
+              HOMEKIT_CHARACTERISTIC(FIRMWARE_REVISION, "4.0"),
+              HOMEKIT_CHARACTERISTIC(HARDWARE_REVISION, "2.0"),
+              NULL
+          },
+          ),
         HOMEKIT_SERVICE(OUTLET, .characteristics=(homekit_characteristic_t*[]){
             HOMEKIT_CHARACTERISTIC(NAME, "Lâmpada Sala de Estar"),
             &switch_on_4,
@@ -301,10 +318,10 @@ void create_accessory_name() {
     uint8_t macaddr[6];
     sdk_wifi_get_macaddr(STATION_IF, macaddr);
 
-    int name_len = snprintf(NULL, 0, "4Lâmpadas-%02X%02X%02X",
+    int name_len = snprintf(NULL, 0, "Area_Sala-%02X%02X%02X",
                             macaddr[3], macaddr[4], macaddr[5]);
     char *name_value = malloc(name_len+1);
-    snprintf(name_value, name_len+1, "4Lâmpadas-%02X%02X%02X",
+    snprintf(name_value, name_len+1, "Area_Sala-%02X%02X%02X",
              macaddr[3], macaddr[4], macaddr[5]);
 
     name.value = HOMEKIT_STRING(name_value);
@@ -318,7 +335,7 @@ void create_accessory_name() {
 void user_init(void) {
     uart_set_baud(0, 115200);
     create_accessory_name();
-    wifi_config_init("6Lâmpadas", NULL, on_wifi_ready);
+    wifi_config_init("area_sala", NULL, on_wifi_ready);
     gpio_init();
 
 
