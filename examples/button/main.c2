@@ -1,10 +1,15 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <espressif/esp_wifi.h>
 #include <espressif/esp_sta.h>
+#include <espressif/esp_common.h>
 #include <esp/uart.h>
 #include <esp8266.h>
 #include <FreeRTOS.h>
 #include <task.h>
+#include <queue.h>
+#include <string.h>
+
 
 #include <homekit/homekit.h>
 #include <homekit/characteristics.h>
@@ -14,6 +19,7 @@
 // The GPIO pin that is connected to a LED
 const int led_gpio = 2;
 
+#define BUTTON_PIN 0
 #ifndef BUTTON_PIN
 #error BUTTON_PIN is not specified
 #endif
