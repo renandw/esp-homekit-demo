@@ -4,6 +4,12 @@ Features: botão programável; sensor de contato
 Maiores possibilidades para automação do acessório.
  */
 
+/*
+Acessório para controlar uma fechadura magnética.
+Features: botão programável; sensor de contato
+Maiores possibilidades para automação do acessório.
+ */
+
 #include <stdio.h>
 #include <espressif/esp_wifi.h>
 #include <espressif/esp_sta.h>
@@ -246,8 +252,8 @@ homekit_accessory_t *accessories[] = {
 
 homekit_server_config_t config = {
     .accessories = accessories,
-    .password = "111-11-111"
-    //ci=6
+    .password = "736-24-212",
+    .setupId="7EN2", //ci=6
 };
 
 void on_wifi_ready() {
