@@ -22,7 +22,7 @@ Maiores possibilidades para automação do acessório.
 
 #include "ota-api.h"
 
-const int relay_gpio = 12;
+const int relay_gpio = 5;
 const int led_gpio = 2;
 
 
