@@ -22,26 +22,25 @@
 #define SDA_PIN 4 // Wemos D2
 #define I2C_BUS 0
 
+
+//Sensor PIN
+#define SENSOR_PIN 14
+#ifndef SENSOR_PIN
+#error SENSOR_PIN is not specified
+#endif
+//Sensor PIN 2
 #define SENSOR_PIN_2 16
 #ifndef SENSOR_PIN_2
 #error SENSOR_PIN_2 is not specified
 #endif
 
-//Sensor_PIN
-#define SENSOR_PIN 14
-#ifndef SENSOR_PIN
-#error SENSOR_PIN is not specified
-#endif
 
-
-//#define BH1750_ADDR_LO 0x23 // ADDR pin floating/low
-//#define BH1750_ADDR_HI 0x5c
 #define  led_gpio 2 // The GPIO pin that is oconnected to built-in LED on ESP12F or D4 on wemos D1 mini.
 #define SENSOR_POLL_PERIOD 2000  // reading time
 
-#define FIRMWARE_VERSION "1.0.0"
-#define MANUFACTURER_DEFAULT "HomeKid™"
-#define MODEL_DEFAULT " LightSensor"
+#define FIRMWARE_VERSION "2.0.0"
+#define MANUFACTURER_DEFAULT "renandw"
+#define MODEL_DEFAULT " LuxMotion"
 
 void led_write(bool on) {
     gpio_write(led_gpio, on ? 0 : 1);
@@ -165,30 +164,28 @@ homekit_accessory_t *accessories[] = {
             NULL
         }),
         HOMEKIT_SERVICE(LIGHT_SENSOR, .primary=true,  .characteristics=(homekit_characteristic_t*[]) {
-                HOMEKIT_CHARACTERISTIC(NAME, "Ambient Light Sensor"),
-                &lux,
-                &fault,
-                NULL
-            },
-        ),
+          HOMEKIT_CHARACTERISTIC(NAME, "Ambient Light Sensor"),
+            &lux,
+            &fault,
+            NULL
+            }),
         NULL
-    },
-),
+  }),
     HOMEKIT_ACCESSORY(.id=2, .category=homekit_accessory_category_sensor, .services=(homekit_service_t*[]) {
       HOMEKIT_SERVICE(ACCESSORY_INFORMATION, .characteristics=(homekit_characteristic_t*[]) {
-        HOMEKIT_CHARACTERISTIC(NAME, "Occupancy Sensor"),
-        HOMEKIT_CHARACTERISTIC(MANUFACTURER, "HaPK"),
-        &serial,
-        HOMEKIT_CHARACTERISTIC(MODEL, "Occupancy Sensor"),
-        HOMEKIT_CHARACTERISTIC(FIRMWARE_REVISION, "1"),
-        HOMEKIT_CHARACTERISTIC(IDENTIFY, occupancy_identify),
-        NULL
-    }),
+          HOMEKIT_CHARACTERISTIC(NAME, "Occupancy Sensor"),
+          HOMEKIT_CHARACTERISTIC(MANUFACTURER, "HaPK"),
+          &serial,
+          HOMEKIT_CHARACTERISTIC(MODEL, "Occupancy Sensor"),
+          HOMEKIT_CHARACTERISTIC(FIRMWARE_REVISION, "1"),
+          HOMEKIT_CHARACTERISTIC(IDENTIFY, occupancy_identify),
+          NULL
+  }),
       HOMEKIT_SERVICE(OCCUPANCY_SENSOR, .primary=true, .characteristics=(homekit_characteristic_t*[]) {
-        HOMEKIT_CHARACTERISTIC(NAME, "Occupancy Sensor"),
-        &occupancy_detected,
-        }),
-      NULL
+          HOMEKIT_CHARACTERISTIC(NAME, "Occupancy Sensor"),
+          &occupancy_detected,
+      }),
+          NULL
       }),
   HOMEKIT_ACCESSORY(.id=3, .category=homekit_accessory_category_sensor, .services=(homekit_service_t*[]) {
       HOMEKIT_SERVICE(ACCESSORY_INFORMATION, .characteristics=(homekit_characteristic_t*[]) {
@@ -199,7 +196,7 @@ homekit_accessory_t *accessories[] = {
           HOMEKIT_CHARACTERISTIC(FIRMWARE_REVISION, "1"),
           HOMEKIT_CHARACTERISTIC(IDENTIFY, occupancy_identify),
           NULL
-          }),      
+      }),      
       HOMEKIT_SERVICE(OCCUPANCY_SENSOR, .primary=false, .characteristics=(homekit_characteristic_t*[]) {
           HOMEKIT_CHARACTERISTIC(NAME, "Occupancy Sensor_2"),
           &occupancy_detected_2,
@@ -211,21 +208,20 @@ homekit_accessory_t *accessories[] = {
 };
 
 
-
 homekit_server_config_t config = {
     .accessories = accessories,
-    .password = "100-00-100",
-    .setupId="HK92" /// homekit_accessory_category_sensor = 10,
+    .password = "736-24-212",
+    .setupId="7EN2" /// homekit_accessory_category_sensor = 10,
 };
 
 void create_accessory_name() {
     uint8_t macaddr[6];
     sdk_wifi_get_macaddr(STATION_IF, macaddr);
 
-    int name_len = snprintf(NULL, 0, "LightSensor-%02X%02X%02X",
+    int name_len = snprintf(NULL, 0, "LuxMotion-%02X%02X%02X",
                             macaddr[3], macaddr[4], macaddr[5]);
     char *name_value = malloc(name_len+1);
-    snprintf(name_value, name_len+1, "LightSensor-%02X%02X%02X",
+    snprintf(name_value, name_len+1, "LuxMotion-%02X%02X%02X",
              macaddr[3], macaddr[4], macaddr[5]);
 
     name.value = HOMEKIT_STRING(name_value);
@@ -247,7 +243,7 @@ void user_init(void) {
     create_accessory_name();
     gpio_init();
     sensor_init();
-    wifi_config_init("HomeKid", "12345678", on_wifi_ready);
+    wifi_config_init("LuxMotion", "12345678", on_wifi_ready);
 
     if (toggle_create(SENSOR_PIN, sensor_callback, NULL)) {
     printf("Failed to initialize sensor\n");
