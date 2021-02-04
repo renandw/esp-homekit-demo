@@ -53,7 +53,7 @@ const int relay_gpio_4 = 16;
 #error TOGGLE_PIN_4 is not specified
 #endif
 
-
+#define ALLOWED_FACTORY_RESET_TIME 60000
 
 void lightbulb_on_1_callback(homekit_characteristic_t *_ch, homekit_value_t on, void *context);
 void lightbulb_on_2_callback(homekit_characteristic_t *_ch, homekit_value_t on, void *context);
@@ -98,8 +98,11 @@ void reset_configuration_task() {
 }
 
 void reset_configuration() {
-    printf("Resetting ESP12F configuration\n");
-    xTaskCreate(reset_configuration_task, "Reset configuration", 256, NULL, 2, NULL);
+    if (xTaskGetTickCountFromISR() < ALLOWED_FACTORY_RESET_TIME / portTICK_PERIOD_MS) {
+    xTaskCreate(reset_configuration_task, "Reset configuration", configMINIMAL_STACK_SIZE, NULL, 2, NULL);
+} else {
+    printf("Factory reset not allowed after %ims since boot. Repower device and try again\n", ALLOWED_FACTORY_RESET_TIME);
+}
 }
 
 homekit_characteristic_t lightbulb_on_1 = HOMEKIT_CHARACTERISTIC_(
